@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<NeuralNetworkSettings>
+	<Version>0.100000</Version>
+	<InputsNum type="int">2</InputsNum>
+	<OutputsNum type="int">1</OutputsNum>
+	<LayersNum type="int">1</LayersNum>
+	<NeuronsNumForLayer type="int">3</NeuronsNumForLayer>
+</NeuralNetworkSettings>
+<WeightList>
+	<Layout0>
+		<Neuron0>
+			<Weight0 type="double">12.030111</Weight0>
+			<Weight1 type="double">-10.320557</Weight1>
+		</Neuron0>
+		<Neuron1>
+			<Weight0 type="double">-3.711307</Weight0>
+			<Weight1 type="double">5.370351</Weight1>
+		</Neuron1>
+		<Neuron2>
+			<Weight0 type="double">9.211157</Weight0>
+			<Weight1 type="double">6.545988</Weight1>
+		</Neuron2>
+	</Layout0>
+	<OutputLayout>
+		<Neuron0>
+			<Weight0 type="double">-15.748236</Weight0>
+			<Weight1 type="double">-16.186303</Weight1>
+			<Weight2 type="double">21.836406</Weight2>
+		</Neuron0>
+	</OutputLayout>
+</WeightList>
