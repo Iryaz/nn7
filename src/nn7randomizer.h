@@ -19,24 +19,26 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 
 #include <random>
 
+#define RANDOM_DEV_FILE "/dev/urandom"
+
 class NN7Randomizer
 {
 public:
 
-  NN7Randomizer(double _minRange = -1, double _maxRange = 1);
+  NN7Randomizer(double minRange = -1, double maxRange = 1);
   ~NN7Randomizer();
 
-  void setMaxRange(double _max) { maxRange = _max; }
-  void setMinRange(double _min) { minRange = _min; }
-  void setRange(double _min, double _max);
+  void setMaxRange(double max) { maxRange_ = max; }
+  void setMinRange(double min) { minRange_ = min; }
+  void setRange(double min, double max);
 
-  double getMinRange() const { return minRange; }
-  double getMaxRange() const { return maxRange; }
+  double getMinRange() const { return minRange_; }
+  double getMaxRange() const { return maxRange_; }
   double getRandom();
 
 private:
-  double minRange;
-  double maxRange;
+  double minRange_;
+  double maxRange_;
 };
 
 #endif

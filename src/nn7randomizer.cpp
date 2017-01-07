@@ -19,8 +19,8 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 using std::random_device;
 using std::uniform_real_distribution;
 
-NN7Randomizer::NN7Randomizer(double _minRange, double _maxRange) :
-  minRange(_minRange), maxRange(_maxRange)
+NN7Randomizer::NN7Randomizer(double minRange, double maxRange) :
+  minRange_(minRange), maxRange_(maxRange)
 {
 }
 
@@ -29,14 +29,14 @@ NN7Randomizer::~NN7Randomizer()
 
 }
 
-void NN7Randomizer::setRange(double _min, double _max) {
-  minRange = _min;
-  maxRange = _max;
+void NN7Randomizer::setRange(double min, double max) {
+  minRange_ = min;
+  maxRange_ = max;
 }
 
 double NN7Randomizer::getRandom()
 {
-  random_device generator("/dev/urandom");
-  uniform_real_distribution<double> distribution(minRange, maxRange);
+  random_device generator(RANDOM_DEV_FILE);
+  uniform_real_distribution<double> distribution(minRange_, maxRange_);
   return distribution(generator);
 }
