@@ -9,8 +9,8 @@
 
 using std::cout;
 
-#define NETWORK_SETTING_FILE "../tests/data/xor_feed_forward.xml"
-#define NETWORK_TRAIN_FILE "../tests/data/xor_train.data"
+#define NETWORK_SETTING_FILE "build/data/xor_feed_forward.xml"
+#define NETWORK_TRAIN_FILE "build/data/xor_train.data"
 
 #define MAX_EPOCH 500000
 #define DESIRE_ERROR 0.0001

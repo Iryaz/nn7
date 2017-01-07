@@ -1,5 +1,6 @@
-build/CMakeCache.txt
-build/CMakeFiles/*
-build/cmake_install.cmake
-build/Makefile
-build/log.txt
+CMakeCache.txt
+CMakeFiles/*
+cmake_install.cmake
+Makefile
+log.txt
+build/*
