@@ -44,6 +44,11 @@ template <class NEURON_TYPE> class NN7FeedForward
 {
 public:
 
+  enum TRAINING_ALGORITHM {
+    BACK_PROPAGATION_TRAINING,
+    RESILIENT_PROPAGATION_TRAINING
+  };
+
   NN7FeedForward(int inputsNum, int outputsNum, int hiddenLayersNum, int neuronsNumHiddenLayer) :
     inputsNum_(inputsNum), outputsNum_(outputsNum), hiddenLayersNum_(hiddenLayersNum), neuronsNumHiddenLayer_(neuronsNumHiddenLayer)
   {
@@ -76,7 +81,7 @@ public:
 
   void initNeuralNetwork()
   {
-    randomGenerator_.setRange(-10, 10);
+    randomGenerator_.setRange(-0.1, 0.1);
     trainEpochNum_ = 0;
     errorCost_ = 0;
     momentumConstant_ = 0.5f;
@@ -103,7 +108,7 @@ public:
 
   void randomizeWeight()
   {
-    randomGenerator_.setRange(-10, 10);
+    randomGenerator_.setRange(-0.1, 0.1);
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
     while (l != NULL) {
       l->setRandomizer(&randomGenerator_);
@@ -206,7 +211,7 @@ public:
 
   double getErrorCost() const { return errorCost_ / outputsNum_; }
 
-  void trainNetwork(TrainDataList &data, int maxEpoch, double desiredError)
+  void trainNetwork(TrainDataList &data, int maxEpoch, double desiredError, TRAINING_ALGORITHM alg)
   {
     trainEpochNum_ = 0;
 
@@ -218,10 +223,16 @@ public:
     for (int e = 0; e < maxEpoch; e++) {
 
       errorCost_ = 0;
+
       for (int d = 0; d < data.size(); d++) {
         trainOneEpoch(data[d]);
-        updateWeights(data[d].inputVector);
+        updateDeltaWeights(data[d].inputVector);
+        if (alg == BACK_PROPAGATION_TRAINING)
+          correctWeights_backprop();
       }
+
+      if (alg == RESILIENT_PROPAGATION_TRAINING)
+        correctWeights_rprop();
 
       trainEpochNum_++;
 
@@ -229,7 +240,7 @@ public:
     }
   }
 
-  void trainNetworkOnFile(const char* fileName, int maxEpoch, double desiredError)
+  void trainNetworkOnFile(const char* fileName, int maxEpoch, double desiredError, TRAINING_ALGORITHM alg)
   {
     TrainDataList trainData;
     std::string line;
@@ -291,7 +302,7 @@ public:
 
       try
       {
-        trainNetwork(trainData, maxEpoch, desiredError);
+        trainNetwork(trainData, maxEpoch, desiredError, alg);
       }
       catch (NN7Exception& e)
       {
@@ -305,7 +316,7 @@ public:
 
   int getEpochNum() const { return trainEpochNum_; }
 
-  void updateWeights(NN7DataVector& trainData)
+  void updateDeltaWeights(NN7DataVector& trainData)
   {
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
@@ -314,22 +325,89 @@ public:
         NEURON_TYPE *currentNeuron = l->getNeuron(n);
 
         for (int w = 0; w < currentNeuron->getInputsNum(); w++) {
-
-          double oldWeight = currentNeuron->getWeight(w);
-          double deltaWeight = 0;
-
+          double E = 0;
+          double weight = currentNeuron->getWeight(w);
           if (l == firstLayout_)
-            deltaWeight = trainData[w] * l->getGradients()->operator[](n) *
-              -trainMoment_;
+            E = trainData[w] * l->getGradients()->operator[](n) * -1;
           else
-            deltaWeight = l->getPrevLayer()->getNeuron(w)->getLastResponse() *
-              l->getGradients()->operator[](n) * -trainMoment_;
+            E = l->getPrevLayer()->getNeuron(w)->getLastResponse() *
+              l->getGradients()->operator[](n) * -1;
 
-          double prevDeltaW = l->getPrevWeights()->operator[](w *(n+1));
-          deltaWeight += momentumConstant_ * prevDeltaW;
-          currentNeuron->setWeight(oldWeight + deltaWeight, w);
+          double dE = l->getDerivateE(n, w);
+          l->setDerivateE(dE + E, n, w);
+        }
+      }
 
-          l->getPrevWeights()->operator[](w *(n+1)) = deltaWeight;
+      l = l->getNextLayer();
+    }
+  }
+
+  double sign(double x)
+  {
+    if (x == 0.0) return 0.0;
+    if (x > 0.0) return 1.0;
+    if (x < 0.0) return -1.0;
+  }
+
+  void correctWeights_backprop()
+  {
+      NN7Layout<NEURON_TYPE>* l = firstLayout_;
+
+      while (l != NULL) {
+        for (int n = 0; n < l->getNeuronsNum(); n++) {
+          NEURON_TYPE* currentNeuron = l->getNeuron(n);
+          for (int w = 0; w < currentNeuron->getInputsNum(); w++) {
+            double deltaWeight = l->getDerivateE(n, w);
+            double oldWeight = currentNeuron->getWeight(w);
+            double prevDeltaW = l->getPrevDeltaWeights(n, w);
+
+            deltaWeight *= trainMoment_;
+            deltaWeight += momentumConstant_ * prevDeltaW;
+            currentNeuron->setWeight(oldWeight + deltaWeight, w);
+            l->setPrevDeltaWeight(deltaWeight, n, w);
+            l->setDerivateE(0, n, w);
+          }
+        }
+        l = l->getNextLayer();
+      }
+  }
+
+  void correctWeights_rprop()
+  {
+    NN7Layout<NEURON_TYPE>* l = firstLayout_;
+
+    while (l != NULL) {
+      for (int n = 0; n < l->getNeuronsNum(); n++) {
+        NEURON_TYPE *currentNeuron = l->getNeuron(n);
+        for (int w = 0; w < currentNeuron->getInputsNum(); w++) {
+          double dE = l->getDerivateE(n, w);
+          double prev_dE = l->getPrevDerivateE(n, w);
+          double delta = l->getTrainRPROPMoment(n, w);
+
+          if (dE * prev_dE > 0) {
+            delta = std::min<double>(delta * 1.2, 50);
+          }
+
+          if (dE * prev_dE < 0) {
+            delta = std::max<double>(delta * 0.5, 0.000001);
+          }
+
+          double deltaW = 0;
+          if (dE > 0) {
+            deltaW = delta;
+          }
+          if( dE < 0) {
+            deltaW = -delta;
+          }
+          if (dE == 0) {
+            deltaW = 0;
+          }
+
+          double oldW = currentNeuron->getWeight(w);
+          currentNeuron->setWeight(oldW + deltaW, w);
+          l->setPrevDerivateE(dE, n, w);
+          l->setDerivateE(0, n, w);
+          l->setTrainRPROPMoment(delta, n, w);
         }
       }
 

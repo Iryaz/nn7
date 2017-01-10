@@ -14,7 +14,7 @@ using std::cout;
 
 #define MAX_EPOCH 500000
 #define DESIRE_ERROR 0.0001
-#define TRAIN_MOMENT 0.4
+#define TRAIN_MOMENT 0.8
 #define INPUTS_NUM 2
 #define OUTPUT_NUM 1
 #define HIDDEN_LAYOUT_NUM 1
@@ -31,14 +31,16 @@ void print_vector(NN7DataVector &n)
 TEST_CASE("Base Neural network test") {
 
   SECTION("Train network XOR function") {
-    NN7FeedForward<NN7UnipolarSigmoidNeuron> nn7(INPUTS_NUM, OUTPUT_NUM, HIDDEN_LAYOUT_NUM, NEURONS_NUM);
+    NN7FeedForward<NN7UnipolarSigmoidNeuron> nn7(INPUTS_NUM, OUTPUT_NUM,
+      HIDDEN_LAYOUT_NUM, NEURONS_NUM);
 
     nn7.setTrainMoment(TRAIN_MOMENT);
 
     for (;;) {
       try
       {
-        nn7.trainNetworkOnFile(NETWORK_TRAIN_FILE, MAX_EPOCH, DESIRE_ERROR);
+        nn7.trainNetworkOnFile(NETWORK_TRAIN_FILE, MAX_EPOCH, DESIRE_ERROR,
+          NN7FeedForward<NN7UnipolarSigmoidNeuron>::RESILIENT_PROPAGATION_TRAINING);
       }
       catch (NN7Exception &e)
       {

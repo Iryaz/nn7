@@ -45,6 +45,7 @@ public:
 
   double response(NN7DataVector* x, double bias = 0);
   double getDerivative();
+  double getDerivative(double x);
 
 private:
   double sigmoid_function_unipolar(double v);
@@ -58,6 +59,7 @@ public:
 
   double response(NN7DataVector* x, double bias = 0);
   double getDerivative();
+  double getDerivative(double x);
 
 private:
   double sigmoid_function_bipolar(double v);

@@ -29,7 +29,11 @@ public:
   NN7Layout(int neuronsNum, int neuronInputNum)
   {
     localGradients_ = new std::vector<double>(neuronsNum);
-    deltaWLst_ = new std::vector<double>(neuronsNum * neuronInputNum);
+    prevDeltaWeightLst_ = new std::vector<double>(neuronsNum * neuronInputNum, 0.0);
+    derivateELst_ = new std::vector<double>(neuronsNum * neuronInputNum, 0.0);
+    prevDerivateELst_ = new std::vector<double>(neuronInputNum * neuronInputNum, 0.0);
+    trainRPROPSteps_ = new std::vector<double>(neuronInputNum * neuronInputNum, 0.0);
+
     nextLayout_ = NULL;
     prevLayout_ = NULL;
     neuronInputNum_ = neuronInputNum;
@@ -47,6 +51,10 @@ public:
       delete neuronLst_[i];
 
     delete localGradients_;
+    delete prevDeltaWeightLst_;
+    delete derivateELst_;
+    delete prevDerivateELst_;
+    delete trainRPROPSteps_;
   }
 
   NN7Layout<NEURON_TYPE>* nextResponse()
@@ -116,7 +124,95 @@ public:
   NN7Layout<NEURON_TYPE>* getNextLayer() const { return nextLayout_; }
   NN7Layout<NEURON_TYPE>* getPrevLayer() const { return prevLayout_; }
   std::vector<double>* getGradients() const { return localGradients_; }
-  std::vector<double>* getPrevWeights() const { return deltaWLst_; }
+
+  double getPrevDeltaWeights(int neuronIndex, int weightIndex) const
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "getPrevDeltaWeights", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "setPrevDeltaWeight", "Weight index - incorrect");
+
+    return prevDeltaWeightLst_->operator[](weightIndex*(neuronIndex+1));
+  }
+
+  void setPrevDeltaWeight(double prevWeight, int neuronIndex, int weightIndex)
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "setPrevDeltaWeight", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "setPrevDeltaWeight", "Weight index - incorrect");
+
+    prevDeltaWeightLst_->operator[](weightIndex*(neuronIndex+1)) = prevWeight;
+  }
+
+  double getDerivateE(int neuronIndex, int weightIndex) const
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "getDerivateE", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "getDerivateE", "Weight index - incorrect");
+
+    return derivateELst_->operator[](weightIndex*(neuronIndex+1));
+  }
+
+  void setDerivateE(double newValue, int neuronIndex, int weightIndex)
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "setDerivateE", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "setDerivateE", "Weight index - incorrect");
+
+    derivateELst_->operator[](weightIndex*(neuronIndex+1)) = newValue;
+  }
+
+  double getPrevDerivateE(int neuronIndex, int weightIndex) const
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "getPrevDerivateE", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "getPrevDerivateE", "Weight index - incorrect");
+
+    return prevDerivateELst_->operator[](weightIndex*(neuronIndex+1));
+  }
+
+  void setPrevDerivateE(double newValue, int neuronIndex, int weightIndex)
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "setPrevDerivateE", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "setPrevDerivateE", "Weight index - incorrect");
+
+    prevDerivateELst_->operator[](weightIndex*(neuronIndex+1)) = newValue;
+  }
+
+  double getTrainRPROPMoment(int neuronIndex, int weightIndex) const
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "getTrainRPROPMoment", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "getTrainRPROPMoment", "Weight index - incorrect");
+
+    return trainRPROPSteps_->operator[](weightIndex*(neuronIndex+1));
+  }
+
+  void setTrainRPROPMoment(double newValue, int neuronIndex, int weightIndex)
+  {
+    if (neuronIndex > (neuronLst_.size() -1))
+      THROW_EXCEPTION("NN7Layout", "setTrainRPROPMoment", "Neuron index - incorrect");
+
+    if (weightIndex > (getNeuron(neuronIndex)->getInputsNum() -1))
+      THROW_EXCEPTION("NN7Layout", "setTrainRPROPMoment", "Weight index - incorrect");
+
+    trainRPROPSteps_->operator[](weightIndex*(neuronIndex+1)) = newValue;
+  }
+
   int getNeuronsNum() const { return neuronsNum_; }
   int getInputsNum() const { return neuronInputNum_; }
 
@@ -126,7 +222,11 @@ public:
 private:
   std::vector<NEURON_TYPE*> neuronLst_;
   std::vector<double>* localGradients_;
-  std::vector<double>* deltaWLst_;
+
+  std::vector<double>* prevDeltaWeightLst_;
+  std::vector<double>* derivateELst_;
+  std::vector<double>* prevDerivateELst_;
+  std::vector<double>* trainRPROPSteps_; // Only use rprop training
 
   int neuronInputNum_;
   int neuronsNum_;

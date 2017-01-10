@@ -24,12 +24,12 @@ NN7LinearNeuron::NN7LinearNeuron(int inputsNum, NN7Randomizer* randomGenerator)
     : inputsNum_(inputsNum), randomGenerator_(randomGenerator),
     lastInputDataPtr_(NULL), lastResponse_(0), lastV_(0), error_(0)
 {
-    weightLst_ = new double[inputsNum];
+    weightLst_ = new double[inputsNum_];
 
     if(randomGenerator_ != NULL)
       randomizeWeightLst();
     else {
-      for(int i = 0; i < inputsNum_; i++)
+      for (int i = 0; i < inputsNum_; i++)
         weightLst_[i] = 0;
     }
 }
@@ -53,6 +53,11 @@ void NN7LinearNeuron::randomWeight()
 double NN7LinearNeuron::getDerivative()
 {
   return 1;
+}
+
+double NN7LinearNeuron::getDerivative(double x)
+{
+  return x;
 }
 
 double NN7LinearNeuron::getV(NN7DataVector* x)

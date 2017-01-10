@@ -39,6 +39,7 @@ public:
 
   double getV(NN7DataVector* x);
   virtual double getDerivative();
+  virtual double getDerivative(double x);
   virtual double response(NN7DataVector* x, double bias = 0);
   double getLastResponse() const { return lastResponse_; }
   double getLastV() const { return lastV_; }
