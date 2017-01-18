@@ -28,7 +28,7 @@ public:
   NN7SigmoidNeuron(int inputsNum, NN7Randomizer* randomGenerator, double alpha = 1.0f);
   ~NN7SigmoidNeuron();
 
-  virtual double response(NN7DataVector* x, double bias = 0) = 0;
+  virtual double response(NN7DataVector* x) = 0;
   double getAlpha() const { return alpha_; }
 
   void setAlpha(double alpha) { alpha_ = alpha; }
@@ -43,7 +43,7 @@ public:
   NN7UnipolarSigmoidNeuron(int _inputsNum,
     NN7Randomizer* _randomGenerator = NULL, double _alpha = 1.0f);
 
-  double response(NN7DataVector* x, double bias = 0);
+  double response(NN7DataVector* x);
   double getDerivative();
 
 private:
@@ -56,7 +56,7 @@ public:
   NN7BipolarSigmoidNeuron(int _inputsNum,
     NN7Randomizer* _randomGenerator = NULL, double _alpha = 1.0f);
 
-  double response(NN7DataVector* x, double bias = 0);
+  double response(NN7DataVector* x);
   double getDerivative();
 
 private:

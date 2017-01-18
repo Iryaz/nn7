@@ -66,6 +66,11 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
       else
         neuronInputNum = neuralNetwork.getLayerNeuronsNum(l);
 
+      pugi::xml_node bnode = neuronNode.append_child("bias");
+      bnode.append_attribute("type") = "double";
+      double bias = neuralNetwork.getBias(l, n);
+      bnode.append_child(pugi::node_pcdata).set_value(TO_STR(bias));
+
       for (int w = 0; w < neuronInputNum; w++) {
         std::string wname = "Weight";
         wname += std::to_string(w);
@@ -82,6 +87,11 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
     std::string neuronName = "Neuron";
     neuronName += std::to_string(n);
     pugi::xml_node neuronNode = outLayout.append_child(neuronName.c_str());
+
+    pugi::xml_node bnode = neuronNode.append_child("bias");
+    bnode.append_attribute("type") = "double";
+    double bias = neuralNetwork.getBias(neuralNetwork.getHiddenLayersNum(), n);
+    bnode.append_child(pugi::node_pcdata).set_value(TO_STR(bias));
 
     for (int w = 0; w < neuralNetwork.getLayerNeuronsNum(neuralNetwork.getHiddenLayersNum() - 1); w++) {
       std::string wname = "Weight";
@@ -108,9 +118,7 @@ template <class NETWORK> void XML2Network(NETWORK& neuralNetwork, const char* fi
   neuralNetwork.setOutputsNum(std::stoi(n.child_value("OutputsNum")));
   neuralNetwork.setHiddenLayersNum(std::stoi(n.child_value("LayersNum")));
   neuralNetwork.setNeuronsNumHiddenLayer(std::stoi(n.child_value("NeuronsNumForLayer")));
-
   neuralNetwork.initNeuralNetwork();
-
 
   pugi::xml_node weightNetwork = doc.child("WeightList");
 
@@ -124,9 +132,14 @@ template <class NETWORK> void XML2Network(NETWORK& neuralNetwork, const char* fi
       weightNum = 0;
       for (pugi::xml_node weight : neuron.children())
       {
-        double newW = std::stod(neuron.child_value(weight.name()));
-        neuralNetwork.setWeight(layoutNum, neuronNum, weightNum , newW);
-        weightNum++;
+        if (std::string(weight.name()) == "bias") {
+          double bias = std::stod(neuron.child_value(weight.name()));
+          neuralNetwork.setBias(layoutNum, neuronNum, bias);
+        } else {
+          double newW = std::stod(neuron.child_value(weight.name()));
+          neuralNetwork.setWeight(layoutNum, neuronNum, weightNum , newW);
+          weightNum++;
+        }
       }
       neuronNum++;
     }

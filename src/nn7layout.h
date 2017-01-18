@@ -29,7 +29,6 @@ public:
   NN7Layout(int neuronsNum, int neuronInputNum)
   {
     localGradients_ = new std::vector<double>(neuronsNum);
-    deltaWLst_ = new std::vector<double>(neuronsNum * neuronInputNum);
     nextLayout_ = NULL;
     prevLayout_ = NULL;
     neuronInputNum_ = neuronInputNum;
@@ -115,8 +114,8 @@ public:
 
   NN7Layout<NEURON_TYPE>* getNextLayer() const { return nextLayout_; }
   NN7Layout<NEURON_TYPE>* getPrevLayer() const { return prevLayout_; }
-  std::vector<double>* getGradients() const { return localGradients_; }
-  std::vector<double>* getPrevWeights() const { return deltaWLst_; }
+  double getGradient(int neuronIndex) const { return localGradients_->operator[](neuronIndex); }
+  void setGradient(double g, int neuronIndex) { localGradients_->operator[](neuronIndex) = g; }
   int getNeuronsNum() const { return neuronsNum_; }
   int getInputsNum() const { return neuronInputNum_; }
 
@@ -126,7 +125,6 @@ public:
 private:
   std::vector<NEURON_TYPE*> neuronLst_;
   std::vector<double>* localGradients_;
-  std::vector<double>* deltaWLst_;
 
   int neuronInputNum_;
   int neuronsNum_;

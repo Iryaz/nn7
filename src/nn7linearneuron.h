@@ -36,15 +36,20 @@ public:
   void setError(double error) { error_ = error; }
   void setRandomizer(NN7Randomizer* randomizer);
   void randomWeight();
-
+  void setBias(double bias) { bias_ = bias; }
+  double getBias() const { return bias_; }
+  void setPrevBias(double bias) { prevBias_ = bias; }
+  double getPrevBias() const { return prevBias_; }
   double getV(NN7DataVector* x);
   virtual double getDerivative();
-  virtual double response(NN7DataVector* x, double bias = 0);
+  virtual double response(NN7DataVector* x);
   double getLastResponse() const { return lastResponse_; }
   double getLastV() const { return lastV_; }
   double getWeight(int weightIndex) const;
   double operator[](int weightLst) const;
   double getError() { return error_; }
+  double getPrevDeltaWeight(int inputIndex) const { return prevDeltaWeight_[inputIndex]; }
+  void setPrevDeltaWeight(double weight, int inputIndex) { prevDeltaWeight_[inputIndex] = weight; }
 
   int getInputsNum() const  { return inputsNum_; }
 
@@ -59,6 +64,9 @@ protected:
   double lastV_;
   double error_;
   double* weightLst_;
+  double* prevDeltaWeight_;
+  double bias_;
+  double prevBias_;
   int inputsNum_;
 
   NN7Randomizer* randomGenerator_;

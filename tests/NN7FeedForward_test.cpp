@@ -13,8 +13,9 @@ using std::cout;
 #define NETWORK_TRAIN_FILE "build/data/xor_train.data"
 
 #define MAX_EPOCH 500000
-#define DESIRE_ERROR 0.0001
-#define TRAIN_MOMENT 0.4
+#define DESIRE_ERROR 0.001
+#define TRAIN_MOMENT 0.1
+#define MOMENTUM_CONST 0.9
 #define INPUTS_NUM 2
 #define OUTPUT_NUM 1
 #define HIDDEN_LAYOUT_NUM 1
@@ -34,25 +35,19 @@ TEST_CASE("Base Neural network test") {
     NN7FeedForward<NN7UnipolarSigmoidNeuron> nn7(INPUTS_NUM, OUTPUT_NUM, HIDDEN_LAYOUT_NUM, NEURONS_NUM);
 
     nn7.setTrainMoment(TRAIN_MOMENT);
+    nn7.setMomentumConst(MOMENTUM_CONST);
 
-    for (;;) {
-      try
-      {
-        nn7.trainNetworkOnFile(NETWORK_TRAIN_FILE, MAX_EPOCH, DESIRE_ERROR);
-      }
-      catch (NN7Exception &e)
-      {
-        NN7Exception::printLastException(e);
-      }
-
-      cout << "Train epoch: " << nn7.getEpochNum() << "\n";
-      if (nn7.getEpochNum() < MAX_EPOCH) {
-        nn7.saveNetwork(NETWORK_SETTING_FILE);
-        break;
-      }
-
-      nn7.randomizeWeight();
+    try
+    {
+      nn7.trainNetworkOnFile(NETWORK_TRAIN_FILE, MAX_EPOCH, DESIRE_ERROR);
     }
+    catch (NN7Exception &e)
+    {
+      NN7Exception::printLastException(e);
+    }
+
+    cout << "Train epoch: " << nn7.getEpochNum() << "\n";
+    nn7.saveNetwork(NETWORK_SETTING_FILE);
   }
 
   SECTION("XOR network test") {

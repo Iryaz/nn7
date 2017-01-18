@@ -38,11 +38,11 @@ double NN7UnipolarSigmoidNeuron::getDerivative()
   return alpha_ *getLastResponse()*(1 - getLastResponse());
 }
 
-double NN7UnipolarSigmoidNeuron::response(NN7DataVector* x, double bias)
+double NN7UnipolarSigmoidNeuron::response(NN7DataVector* x)
 {
   try
   {
-    lastResponse_ = sigmoid_function_unipolar(getV(x) + bias);
+    lastResponse_ = sigmoid_function_unipolar(getV(x) + bias_);
   }
   catch (NN7Exception& e)
   {
@@ -69,11 +69,11 @@ double NN7BipolarSigmoidNeuron::getDerivative()
   return alpha_ *getLastResponse()*(1 - getLastResponse());
 }
 
-double NN7BipolarSigmoidNeuron::response(NN7DataVector* x, double bias)
+double NN7BipolarSigmoidNeuron::response(NN7DataVector* x)
 {
   try
   {
-    lastResponse_ = sigmoid_function_bipolar(getV(x) + bias);
+    lastResponse_ = sigmoid_function_bipolar(getV(x) + bias_);
   }
   catch (NN7Exception& e)
   {

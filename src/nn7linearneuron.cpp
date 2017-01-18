@@ -22,21 +22,26 @@ using std::cout;
 
 NN7LinearNeuron::NN7LinearNeuron(int inputsNum, NN7Randomizer* randomGenerator)
     : inputsNum_(inputsNum), randomGenerator_(randomGenerator),
-    lastInputDataPtr_(NULL), lastResponse_(0), lastV_(0), error_(0)
+    lastInputDataPtr_(NULL), lastResponse_(0), lastV_(0), error_(0),
+    bias_(0), prevBias_(0)
 {
     weightLst_ = new double[inputsNum];
+    prevDeltaWeight_ = new double[inputsNum_];
 
     if(randomGenerator_ != NULL)
       randomizeWeightLst();
     else {
-      for(int i = 0; i < inputsNum_; i++)
+      for(int i = 0; i < inputsNum_; i++) {
         weightLst_[i] = 0;
+        prevDeltaWeight_[i] = 0;
+      }
     }
 }
 
 NN7LinearNeuron::~NN7LinearNeuron()
 {
   delete[] weightLst_;
+  delete[] prevDeltaWeight_;
 }
 
 void NN7LinearNeuron::randomizeWeightLst()
@@ -70,11 +75,11 @@ double NN7LinearNeuron::getV(NN7DataVector* x)
     return lastV_;
 }
 
-double NN7LinearNeuron::response(NN7DataVector* x, double bias)
+double NN7LinearNeuron::response(NN7DataVector* x)
 {
   try
   {
-    lastResponse_ = getV(x) + bias;
+    lastResponse_ = getV(x) + bias_;
   }
   catch (NN7Exception& e)
   {
