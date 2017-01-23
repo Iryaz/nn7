@@ -18,6 +18,8 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 #define NN7_NN7RANDOMIZER_H_
 
 #include <random>
+#include <cmath>
+//#include <sys/time.h>
 
 #define RANDOM_DEV_FILE "/dev/urandom"
 

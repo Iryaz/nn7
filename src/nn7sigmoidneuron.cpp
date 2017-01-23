@@ -35,7 +35,7 @@ NN7UnipolarSigmoidNeuron::NN7UnipolarSigmoidNeuron(int inputsNum,
 
 double NN7UnipolarSigmoidNeuron::getDerivative()
 {
-  return alpha_ *getLastResponse()*(1 - getLastResponse());
+  return 2 * alpha_ *getLastResponse()*(1 - getLastResponse());
 }
 
 double NN7UnipolarSigmoidNeuron::response(NN7DataVector* x)
@@ -55,7 +55,7 @@ double NN7UnipolarSigmoidNeuron::response(NN7DataVector* x)
 
 double NN7UnipolarSigmoidNeuron::sigmoid_function_unipolar(double v)
 {
-  return 1.0f / (1.0f + std::exp(-alpha_*v));
+  return 1.0f / (1.0f + std::exp(-2*alpha_*v));
 }
 
 NN7BipolarSigmoidNeuron::NN7BipolarSigmoidNeuron(
@@ -66,7 +66,7 @@ NN7BipolarSigmoidNeuron::NN7BipolarSigmoidNeuron(
 
 double NN7BipolarSigmoidNeuron::getDerivative()
 {
-  return alpha_ *getLastResponse()*(1 - getLastResponse());
+	return alpha_ * (1 - (getLastResponse() * getLastResponse()));
 }
 
 double NN7BipolarSigmoidNeuron::response(NN7DataVector* x)
@@ -86,6 +86,6 @@ double NN7BipolarSigmoidNeuron::response(NN7DataVector* x)
 
 double NN7BipolarSigmoidNeuron::sigmoid_function_bipolar(double v)
 {
-  lastResponse_ = (2.0f / (1.0f + std::exp(-alpha_*v))) - 1;
+  lastResponse_ = 2.0f / (1.0f + std::exp(-2 * alpha_*v)) - 1;
   return lastResponse_;
 }

@@ -9,13 +9,13 @@
 
 using std::cout;
 
-#define NETWORK_SETTING_FILE "build/data/xor_feed_forward.xml"
-#define NETWORK_TRAIN_FILE "build/data/xor_train.data"
+#define NETWORK_SETTING_FILE "xor_feed_forward.xml"
+#define NETWORK_TRAIN_FILE "xor_train.data"
 
-#define MAX_EPOCH 500000
-#define DESIRE_ERROR 0.001
-#define TRAIN_MOMENT 0.1
-#define MOMENTUM_CONST 0.9
+#define MAX_EPOCH 200000
+#define DESIRE_ERROR 0.00001
+#define TRAIN_MOMENT 0.8
+#define MOMENTUM_CONST 0.0
 #define INPUTS_NUM 2
 #define OUTPUT_NUM 1
 #define HIDDEN_LAYOUT_NUM 1
@@ -36,7 +36,7 @@ TEST_CASE("Base Neural network test") {
 
     nn7.setTrainMoment(TRAIN_MOMENT);
     nn7.setMomentumConst(MOMENTUM_CONST);
-
+    print_nn(nn7);
     try
     {
       nn7.trainNetworkOnFile(NETWORK_TRAIN_FILE, MAX_EPOCH, DESIRE_ERROR);
@@ -45,44 +45,41 @@ TEST_CASE("Base Neural network test") {
     {
       NN7Exception::printLastException(e);
     }
-
+	print_nn(nn7);
     cout << "Train epoch: " << nn7.getEpochNum() << "\n";
+	cout << "Error Cost: " << nn7.getErrorCost() << "\n";
     nn7.saveNetwork(NETWORK_SETTING_FILE);
   }
 
   SECTION("XOR network test") {
 
-    NN7DataVector x1 { 0, 1 };
-    NN7DataVector x2 { 1, 1 };
-    NN7DataVector x3 { 0, 0 };
-    NN7DataVector x4 { 1, 0 };
-    NN7DataVector x5 { 0.5, 0.5 };
+    NN7DataVector x1 { 1, 1 };
+    NN7DataVector x2 { 0, 0 };
+    NN7DataVector x3 { 1, 0 };
+    NN7DataVector x4 { 0, 1 };
     NN7DataVector testOut;
 
     NN7FeedForward<NN7UnipolarSigmoidNeuron> newNetwork(NETWORK_SETTING_FILE);
 
     testOut = newNetwork.response(x1);
-    cout << "(0, 1) -> " << testOut[0] << "\n";
-    REQUIRE(testOut[0] > 0.9);
-
-    testOut = newNetwork.response(x2);
     cout << "(1, 1) -> " << testOut[0] << "\n";
     REQUIRE(testOut[0] < 0.1);
 
-    testOut = newNetwork.response(x3);
+    testOut = newNetwork.response(x2);
     cout << "(0, 0) -> " << testOut[0] << "\n";
     REQUIRE(testOut[0] < 0.1);
 
-    testOut = newNetwork.response(x4);
+    testOut = newNetwork.response(x3);
     cout << "(1, 0) -> " << testOut[0] << "\n";
     REQUIRE(testOut[0] > 0.9);
 
-    testOut = newNetwork.response(x5);
-    cout << "(0.5, 0.5) -> " << testOut[0] << "\n";
+    testOut = newNetwork.response(x4);
+    cout << "(0, 1) -> " << testOut[0] << "\n";
+    REQUIRE(testOut[0] > 0.9);
   }
 
   SECTION("Test error processing") {
-    NN7FeedForward<NN7UnipolarSigmoidNeuron> network(2, 1, 2, 3);
+    NN7FeedForward<NN7BipolarSigmoidNeuron> network(2, 1, 2, 3);
     try
     {
       NN7DataVector input { 1, 23, 45, 2};
