@@ -20,7 +20,7 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 
 using std::cout;
 
-NN7LinearNeuron::NN7LinearNeuron(int inputsNum, NN7Randomizer* randomGenerator)
+NN7LinearNeuron::NN7LinearNeuron(uint32_t inputsNum, NN7Randomizer* randomGenerator)
     : inputsNum_(inputsNum), randomGenerator_(randomGenerator),
     lastInputDataPtr_(NULL), lastResponse_(0), lastV_(0), error_(0),
     bias_(0), prevBias_(0)
@@ -31,7 +31,7 @@ NN7LinearNeuron::NN7LinearNeuron(int inputsNum, NN7Randomizer* randomGenerator)
     if(randomGenerator_ != NULL)
       randomizeWeightLst();
     else {
-      for(int i = 0; i < inputsNum_; i++) {
+      for(uint32_t i = 0; i < inputsNum_; i++) {
         weightLst_[i] = 0;
         prevDeltaWeight_[i] = 0;
       }
@@ -46,7 +46,7 @@ NN7LinearNeuron::~NN7LinearNeuron()
 
 void NN7LinearNeuron::randomizeWeightLst()
 {
-  for (int i = 0; i < inputsNum_; i++)
+  for (uint32_t i = 0; i < inputsNum_; i++)
     weightLst_[i] = randomGenerator_->getRandom();
 }
 
@@ -69,7 +69,7 @@ double NN7LinearNeuron::getV(NN7DataVector* x)
         "x::size() != neuronInputsNum");
     }
 
-    for (int i = 0; i < inputsNum_; i++)
+    for (uint32_t i = 0; i < inputsNum_; i++)
       lastV_ += (x->getValue(i) * weightLst_[i]);
 
     return lastV_;
@@ -90,7 +90,7 @@ double NN7LinearNeuron::response(NN7DataVector* x)
   return lastResponse_;
 }
 
-void NN7LinearNeuron::setWeight(double newWeight, int weightIndex)
+void NN7LinearNeuron::setWeight(double newWeight, uint32_t weightIndex)
 {
     if (weightIndex > (inputsNum_ - 1))
       THROW_EXCEPTION("NN7LinearNeuron", "setWeight",
@@ -110,11 +110,11 @@ void NN7LinearNeuron::setWeight(NN7DataVector* newWeightLst)
         "newWeightLst::size() != neuronInputsNum");
     }
 
-    for (int i = 0; i < newWeightLst->size(); i++)
+    for (uint32_t i = 0; i < newWeightLst->size(); i++)
       weightLst_[i] = newWeightLst->getValue(i);
 }
 
-double NN7LinearNeuron::getWeight(int weightIndex) const
+double NN7LinearNeuron::getWeight(uint32_t weightIndex) const
 {
   if (weightIndex > (inputsNum_ - 1) || weightIndex < 0) {
 
@@ -130,7 +130,7 @@ double NN7LinearNeuron::getWeight(int weightIndex) const
   return weightLst_[weightIndex];
 }
 
-double NN7LinearNeuron::operator[](int weightIndex) const
+double NN7LinearNeuron::operator[](uint32_t weightIndex) const
 {
   return getWeight(weightIndex);
 }
@@ -146,7 +146,7 @@ void NN7LinearNeuron::setRandomizer(NN7Randomizer* randomGenerator)
 void NN7LinearNeuron::print_weight(NN7LinearNeuron& n)
 {
   cout << "Weight neuron: ";
-  for (int i = 0; i < n.inputsNum_; i++) {
+  for (uint32_t i = 0; i < n.inputsNum_; i++) {
     cout << n[i] << " ";
   }
 

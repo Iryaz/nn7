@@ -44,10 +44,10 @@ public:
   struct EXCEPTION_REPORT
   {
     EXCEPTION_REPORT() : exceptionNum(0), errorCode(0) {}
-    int exceptionNum;
+    uint32_t exceptionNum;
     std::string className;
     std::string functionName;
-    int errorCode;
+    uint32_t errorCode;
     std::string message;
   };
 

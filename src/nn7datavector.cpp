@@ -22,17 +22,17 @@ NN7DataVector::NN7DataVector() : elementCount_(0),
 {
 }
 
-NN7DataVector::NN7DataVector(int _size, double initVectorValue) :
+NN7DataVector::NN7DataVector(uint32_t _size, double initVectorValue) :
   elementCount_(0), firstElement_(NULL)
 {
-  for (int i = 0; i < _size; i++)
+  for (uint32_t i = 0; i < _size; i++)
     append(initVectorValue);
 }
 
-NN7DataVector::NN7DataVector(double* valueArray, int len) :
+NN7DataVector::NN7DataVector(double* valueArray, uint32_t len) :
   elementCount_(0), firstElement_(NULL)
 {
-  for (int i = 0; i < len; i++)
+  for (uint32_t i = 0; i < len; i++)
     append(valueArray[i]);
 }
 
@@ -67,7 +67,7 @@ void NN7DataVector::clear()
     DataVectorElement* e = firstElement_;
     DataVectorElement* nextElement = NULL;
 
-    for (int i = 0; i < size(); i++) {
+    for (uint32_t i = 0; i < size(); i++) {
       nextElement = e->next;
       delete e;
       e = nextElement;
@@ -97,7 +97,7 @@ void NN7DataVector::append(double value)
   elementCount_++;
 }
 
-void NN7DataVector::replaceValue(int index, double newValue)
+void NN7DataVector::replaceValue(uint32_t index, double newValue)
 {
   if (size() == 0) {
     THROW_EXCEPTION("NN7DataVector", "replaceValue",
@@ -114,7 +114,7 @@ void NN7DataVector::replaceValue(int index, double newValue)
   if (index  == 0) {
     e->val = newValue;
   } else {
-    int count = 0;
+    uint32_t count = 0;
 
     while (e->next != NULL) {
       count++;
@@ -127,7 +127,7 @@ void NN7DataVector::replaceValue(int index, double newValue)
   }
 }
 
-double NN7DataVector::getValue(int index) const
+double NN7DataVector::getValue(uint32_t index) const
 {
   if (size() == 0) {
     THROW_EXCEPTION("NN7DataVector", "getValue",
@@ -144,7 +144,7 @@ double NN7DataVector::getValue(int index) const
 
   DataVectorElement* e = firstElement_;
 
-  int count = 0;
+  uint32_t count = 0;
 
   while (e->next != NULL) {
     count++;
@@ -156,7 +156,7 @@ double NN7DataVector::getValue(int index) const
   return e->val;
 }
 
-double NN7DataVector::operator[](int index) const
+double NN7DataVector::operator[](uint32_t index) const
 {
   try
   {
@@ -178,7 +178,7 @@ NN7DataVector NN7DataVector::operator-(NN7DataVector& v)
 
   NN7DataVector ret;
 
-  for (int i = 0; i < v.size(); i++)
+  for (uint32_t i = 0; i < v.size(); i++)
     ret.append(getValue(i) - v.getValue(i));
 
   return ret;
@@ -193,7 +193,7 @@ NN7DataVector NN7DataVector::operator+(NN7DataVector& v)
 
   NN7DataVector ret;
 
-  for (int i = 0; i < v.size(); i++)
+  for (uint32_t i = 0; i < v.size(); i++)
     ret.append(getValue(i) + v.getValue(i));
 
   return ret;
@@ -203,7 +203,7 @@ NN7DataVector& NN7DataVector::operator=(const NN7DataVector& v)
 {
   clear();
 
-  for (int i = 0; i < v.size(); i++)
+  for (uint32_t i = 0; i < v.size(); i++)
     append(v[i]);
 
   return *this;
@@ -217,33 +217,33 @@ void NN7DataVector::normalize(NORMALIZE_METHOD method)
 
   switch (method) {
     case EUCLIDEAN: {
-      for (int i = 0; i < size(); i++)
+      for (uint32_t i = 0; i < size(); i++)
         strength += pow(getValue(i), 2);
       strength = sqrt(strength);
     } break;
 
     case MANHATTAN: {
-      for (int i = 0; i < size(); i++)
+      for (uint32_t i = 0; i < size(); i++)
         strength += abs(getValue(i));
     } break;
   }
 
   if(strength == 0) strength = 1;
 
-  for (int i = 0; i < size(); i++) {
+  for (uint32_t i = 0; i < size(); i++) {
     double currentValue = getValue(i);
     replaceValue(i, currentValue / strength);
   }
 }
 
-int NN7DataVector::vector2Array(NN7DataVector& v, double* arrayPtr, int arrayLen)
+uint32_t NN7DataVector::vector2Array(NN7DataVector& v, double* arrayPtr, uint32_t arrayLen)
 {
-  int copyElementNum = 0;
+  uint32_t copyElementNum = 0;
 
   if (v.size() > arrayLen)
     return copyElementNum;
 
-  for (int i = 0; i < v.size(); i++) {
+  for (uint32_t i = 0; i < v.size(); i++) {
     arrayPtr[i] = v[i];
     copyElementNum++;
   }

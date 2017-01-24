@@ -55,7 +55,7 @@ void NN7Exception::printLastException(NN7Exception& e)
 void NN7Exception::printAllException(NN7Exception& e)
 {
   cout << "\n====== Begin Exceptions stack -> \n";
-  for (int i = 0; i < e.exceptionStack_.size(); i++) {
+  for (uint32_t i = 0; i < e.exceptionStack_.size(); i++) {
     NN7Exception::printReport(e.exceptionStack_[i]);
   }
 

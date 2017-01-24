@@ -10,14 +10,14 @@ using std::cout;
 
 void printVector(NN7DataVector &v)
 {
-  for(int i = 0; i < v.size(); i++)
+  for(uint32_t i = 0; i < v.size(); i++)
     cout << v[i] << " ";
   cout << "\n";
 }
 
 void testCopyObj(NN7DataVector v)
 {
-  for(int i = 0; i < v.size(); i++)
+  for(uint32_t i = 0; i < v.size(); i++)
     cout << v[i] << " ";
   cout << "\n";
 }

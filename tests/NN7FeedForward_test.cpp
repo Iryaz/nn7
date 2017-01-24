@@ -25,7 +25,7 @@ typedef NN7FeedForward<NN7UnipolarSigmoidNeuron> FeedForwardNetwork;
 
 void print_vector(NN7DataVector &n)
 {
-  for (int i = 0; i < n.size(); i++)
+  for (uint32_t i = 0; i < n.size(); i++)
     cout << n[i] << " ";
 
   cout << "\n";

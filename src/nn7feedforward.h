@@ -44,7 +44,7 @@ template <class NEURON_TYPE> class NN7FeedForward
 {
 public:
 
-  NN7FeedForward(int inputsNum, int outputsNum, int hiddenLayersNum, int neuronsNumHiddenLayer) :
+  NN7FeedForward(uint32_t inputsNum, uint32_t outputsNum, uint32_t hiddenLayersNum, uint32_t neuronsNumHiddenLayer) :
     inputsNum_(inputsNum), outputsNum_(outputsNum), hiddenLayersNum_(hiddenLayersNum), neuronsNumHiddenLayer_(neuronsNumHiddenLayer)
   {
     initNeuralNetwork();
@@ -66,7 +66,7 @@ public:
   ~NN7FeedForward()
   {
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
-    int i = 0;
+    uint32_t i = 0;
     while (l != NULL) {
       NN7Layout<NEURON_TYPE>* t = l;
       l = l->getNextLayer();
@@ -87,7 +87,7 @@ public:
 
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
-    for (int i = 1; i < hiddenLayersNum_; i++) {
+    for (uint32_t i = 1; i < hiddenLayersNum_; i++) {
       l->setNextLayer(new NN7Layout<NEURON_TYPE>(neuronsNumHiddenLayer_, neuronsNumHiddenLayer_));
       l->getNextLayer()->setPrevLayer(l);
       l->getNextLayer()->setRandomizer(&randomGenerator_);
@@ -131,25 +131,25 @@ public:
     return lastLayout_->getLastResponse();
   }
 
-  int getInputsNum() const { return inputsNum_; }
-  int getOutputNum() const { return outputsNum_; }
-  int getHiddenLayersNum() const { return hiddenLayersNum_; }
-  int getNeuronsNumHiddenLayer() const { return neuronsNumHiddenLayer_; }
+  uint32_t getInputsNum() const { return inputsNum_; }
+  uint32_t getOutputNum() const { return outputsNum_; }
+  uint32_t getHiddenLayersNum() const { return hiddenLayersNum_; }
+  uint32_t getNeuronsNumHiddenLayer() const { return neuronsNumHiddenLayer_; }
 
-  void setHiddenLayersNum(int hiddenLayersNum) {
+  void setHiddenLayersNum(uint32_t hiddenLayersNum) {
     hiddenLayersNum_ = hiddenLayersNum;
   }
-  void setNeuronsNumHiddenLayer(int neuronsNumHiddenLayer) {
+  void setNeuronsNumHiddenLayer(uint32_t neuronsNumHiddenLayer) {
     neuronsNumHiddenLayer_ = neuronsNumHiddenLayer;
   }
-  void setInputsNum(int inputsNum) { inputsNum_ = inputsNum; }
-  void setOutputsNum(int outputsNum) { outputsNum_ = outputsNum; }
+  void setInputsNum(uint32_t inputsNum) { inputsNum_ = inputsNum; }
+  void setOutputsNum(uint32_t outputsNum) { outputsNum_ = outputsNum; }
 
-  int getLayerNeuronsNum(int layerIndex) const
+  uint32_t getLayerNeuronsNum(uint32_t layerIndex) const
   {
     if (layerIndex == getHiddenLayersNum()) return getOutputNum();
     if (layerIndex > (getHiddenLayersNum() - 1)) return 0;
-    int count = 0;
+    uint32_t count = 0;
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
     while (l != NULL && count != layerIndex) {
@@ -160,10 +160,10 @@ public:
     return l->getNeuronsNum();
   }
 
-  double getWeight(int hiddenLayerIndex, int neuronIndex, int neuronInputIndex)
+  double getWeight(uint32_t hiddenLayerIndex, uint32_t neuronIndex, uint32_t neuronInputIndex)
   {
     if (hiddenLayerIndex > getHiddenLayersNum()) return 0;
-    int lcount = 0;
+    uint32_t lcount = 0;
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
     while (l != NULL && lcount != hiddenLayerIndex) {
@@ -177,10 +177,10 @@ public:
     return neuron->getWeight(neuronInputIndex);
   }
 
-  void setWeight(int layersIndex, int neuronIndex, int neuronInputIndex, double newWeight)
+  void setWeight(uint32_t layersIndex, uint32_t neuronIndex, uint32_t neuronInputIndex, double newWeight)
   {
     if (layersIndex > getHiddenLayersNum()) return;
-    int lcount = 0;
+    uint32_t lcount = 0;
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
     while (l != NULL && lcount != layersIndex) {
@@ -194,10 +194,10 @@ public:
     neuron->setWeight(newWeight, neuronInputIndex);
   }
 
-  double getBias(int hiddenLayerIndex, int neuronIndex)
+  double getBias(uint32_t hiddenLayerIndex, uint32_t neuronIndex)
   {
     if (hiddenLayerIndex > getHiddenLayersNum()) return 0;
-    int lcount = 0;
+    uint32_t lcount = 0;
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
     while (l != NULL && lcount != hiddenLayerIndex) {
@@ -211,10 +211,10 @@ public:
     return neuron->getBias();
   }
 
-  void setBias(int layersIndex, int neuronIndex, double newBias)
+  void setBias(uint32_t layersIndex, uint32_t neuronIndex, double newBias)
   {
     if (layersIndex > getHiddenLayersNum()) return;
-    int lcount = 0;
+    uint32_t lcount = 0;
     NN7Layout<NEURON_TYPE>* l = firstLayout_;
 
     while (l != NULL && lcount != layersIndex) {
@@ -235,7 +235,7 @@ public:
 
   double getErrorCost() const { return errorCost_;}
 
-  void trainNetwork(TrainDataList &data, int maxEpoch, double desiredError)
+  void trainNetwork(TrainDataList &data, uint32_t maxEpoch, double desiredError)
   {
     trainEpochNum_ = 0;
 
@@ -244,9 +244,9 @@ public:
     if (desiredError <= 0)
       THROW_EXCEPTION("NN7FeedForward", "trainNetwork", "desiredError <= 0");
 
-    for (int e = 0; e < maxEpoch; e++) {
+    for (uint32_t e = 0; e < maxEpoch; e++) {
       errorCost_ = 0;
-      for (int d = 0; d < data.size(); d++) {
+      for (uint32_t d = 0; d < data.size(); d++) {
         trainOneEpoch(data[d]);
       }
 
@@ -257,15 +257,15 @@ public:
     }
   }
 
-  void trainNetworkOnFile(const char* fileName, int maxEpoch, double desiredError)
+  void trainNetworkOnFile(const char* fileName, uint32_t maxEpoch, double desiredError)
   {
     TrainDataList trainData;
     std::string line;
     std::fstream trainFile(fileName, std::fstream::in);
-    int trainDataSetCount = 0;
+    uint32_t trainDataSetCount = 0;
 
-    int dataSetSize = 0, inputNum = 0, outputsNum_ = 0;
-    int d = 0;
+    uint32_t dataSetSize = 0, inputNum = 0, outputsNum_ = 0;
+    uint32_t d = 0;
     if (trainFile.is_open())
     {
       std::string oneString;
@@ -294,7 +294,7 @@ public:
         NN7DataVector yVector;
         std::stringstream s1(oneString);
 
-        for (int i = 0; i < inputNum; i++) {
+        for (uint32_t i = 0; i < inputNum; i++) {
           double x = 0;
           s1 >> x;
           xVector.append(x);
@@ -305,7 +305,7 @@ public:
             "Uncorrect train file (train data set > file size)");
 
         std::stringstream s2(oneString);
-        for (int i = 0; i < outputsNum_; i++) {
+        for (uint32_t i = 0; i < outputsNum_; i++) {
           double y = 0;
           s2 >> y;
           yVector.append(y);
@@ -331,7 +331,7 @@ public:
         std::string(fileName));
   }
 
-  int getEpochNum() const { return trainEpochNum_; }
+  uint32_t getEpochNum() const { return trainEpochNum_; }
 
   void saveNetwork(const char* xmlFile)
   {
@@ -349,7 +349,7 @@ protected:
   NN7Layout<NEURON_TYPE>* firstLayout_;
   NN7Layout<NEURON_TYPE>* lastLayout_;
 
-  void updateWeightBackProp(NN7Layout<NEURON_TYPE>* layer, int neuron, int weight, double x)
+  void updateWeightBackProp(NN7Layout<NEURON_TYPE>* layer, uint32_t neuron, uint32_t weight, double x)
   {
 	  NEURON_TYPE* currentNeuron = layer->getNeuron(neuron);
 	  double oldW = currentNeuron->getWeight(weight);
@@ -367,14 +367,14 @@ protected:
       NN7DataVector out = response(oneTrain.inputVector);
       NN7DataVector errorVector = oneTrain.requiredOutVector - out;
 
-      for (int n = 0; n < l->getNeuronsNum(); n++) {
+      for (uint32_t n = 0; n < l->getNeuronsNum(); n++) {
         NEURON_TYPE *lastLayerNeuron = l->getNeuron(n);
         l->setGradient(errorVector[n] * lastLayerNeuron->getDerivative(), n);
 		//double oldBias = lastLayerNeuron->getBias();
 		//lastLayerNeuron->setBias(oldBias + (l->getGradient(n) * trainMoment_));
 
 		NN7Layout<NEURON_TYPE> *p = l->getPrevLayer();
-		for (int w = 0; w < lastLayerNeuron->getInputsNum(); w++)
+		for (uint32_t w = 0; w < lastLayerNeuron->getInputsNum(); w++)
 			updateWeightBackProp(l, n, w, p->getNeuron(w)->getLastResponse());
 
         errorCost_ += pow(errorVector[n], 2);
@@ -383,13 +383,13 @@ protected:
       l = l->getPrevLayer();
 
       while (l != NULL) {
-        for (int i = 0; i < l->getNeuronsNum(); i++) {
+        for (uint32_t i = 0; i < l->getNeuronsNum(); i++) {
 
           double gradient = 0;
           NN7Layout<NEURON_TYPE>* nextLayout = l->getNextLayer();
           NEURON_TYPE* currentNeuron = l->getNeuron(i);
 
-          for (int j = 0; j < nextLayout->getNeuronsNum(); j++) {
+          for (uint32_t j = 0; j < nextLayout->getNeuronsNum(); j++) {
             gradient += nextLayout->getNeuron(j)->getWeight(i) *
               nextLayout->getGradient(j);
           }
@@ -399,13 +399,13 @@ protected:
 		  //currentNeuron->setBias(oldBias + (l->getGradient(i) * trainMoment_));
 		  
 		  if (l->getPrevLayer() == NULL) {
-			for (int w = 0; w < currentNeuron->getInputsNum(); w++)
+			for (uint32_t w = 0; w < currentNeuron->getInputsNum(); w++)
 				updateWeightBackProp(l, i, w, oneTrain.inputVector[w]);
 		  } 
 		  else
 		  {
 			NN7Layout<NEURON_TYPE>* p = l->getPrevLayer();  
-			for (int w = 0; w < currentNeuron->getInputsNum(); w++)
+			for (uint32_t w = 0; w < currentNeuron->getInputsNum(); w++)
 				updateWeightBackProp(l, i, w, p->getNeuron(w)->getLastResponse());
 		  }
         }
@@ -420,16 +420,16 @@ protected:
   }
 
 private:
-  int hiddenLayersNum_;
-  int inputsNum_;
-  int outputsNum_;
-  int neuronsNumHiddenLayer_;
+  uint32_t hiddenLayersNum_;
+  uint32_t inputsNum_;
+  uint32_t outputsNum_;
+  uint32_t neuronsNumHiddenLayer_;
   NN7Randomizer randomGenerator_;
 
   double momentumConstant_;
   double errorCost_;
   double trainMoment_;
-  int trainEpochNum_;
+  uint32_t trainEpochNum_;
 
 };
 
@@ -439,9 +439,9 @@ template <class NEURON_TYPE> void print_nn(NN7FeedForward<NEURON_TYPE>& nn)
   NN7Layout<NEURON_TYPE>* l = nn.firstLayout_;
 
   std::cout << "\nNeuron network -------------> \n";
-  for ( int i = 0; i <= nn.hiddenLayersNum_; i++) {
+  for ( uint32_t i = 0; i <= nn.hiddenLayersNum_; i++) {
     std::cout << "Layout N" << i << "\n";
-    for (int j = 0; j < l->getNeuronsNum(); j++) {
+    for (uint32_t j = 0; j < l->getNeuronsNum(); j++) {
       std::cout << " Neuron N" << j << " Bias: ";
       std::cout << l->getNeuron(j)->getBias() << " ";
 

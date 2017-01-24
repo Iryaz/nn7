@@ -33,34 +33,34 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
   versionNode.append_child(pugi::node_pcdata).set_value(TO_STR(VERSION));
 
   pugi::xml_node inputsNumNode = neuralNetworkSettings.append_child("InputsNum");
-  inputsNumNode.append_attribute("type") = "int";
+  inputsNumNode.append_attribute("type") = "uint32_t";
   inputsNumNode.append_child(pugi::node_pcdata).set_value(TO_STR(neuralNetwork.getInputsNum()));
 
   pugi::xml_node outputsNumNode = neuralNetworkSettings.append_child("OutputsNum");
-  outputsNumNode.append_attribute("type") = "int";
+  outputsNumNode.append_attribute("type") = "uint32_t";
   outputsNumNode.append_child(pugi::node_pcdata).set_value(TO_STR(neuralNetwork.getOutputNum()));
 
   pugi::xml_node layersNumNode = neuralNetworkSettings.append_child("LayersNum");
-  layersNumNode.append_attribute("type") = "int";
+  layersNumNode.append_attribute("type") = "uint32_t";
   layersNumNode.append_child(pugi::node_pcdata).set_value(TO_STR(neuralNetwork.getHiddenLayersNum()));
 
   pugi::xml_node neuronsNumNode = neuralNetworkSettings.append_child("NeuronsNumForLayer");
-  neuronsNumNode.append_attribute("type") = "int";
+  neuronsNumNode.append_attribute("type") = "uint32_t";
   neuronsNumNode.append_child(pugi::node_pcdata).set_value(TO_STR(neuralNetwork.getNeuronsNumHiddenLayer()));
 
   pugi::xml_node weightLstNode = doc.append_child("WeightList");
 
-  for (int l = 0; l < neuralNetwork.getHiddenLayersNum(); l++) {
+  for (uint32_t l = 0; l < neuralNetwork.getHiddenLayersNum(); l++) {
     std::string name = "Layout";
     name += std::to_string(l);
     pugi::xml_node layoutNode = weightLstNode.append_child(name.c_str());
 
-    for (int n = 0; n < neuralNetwork.getLayerNeuronsNum(l); n++) {
+    for (uint32_t n = 0; n < neuralNetwork.getLayerNeuronsNum(l); n++) {
       std::string neuronName = "Neuron";
       neuronName += std::to_string(n);
       pugi::xml_node neuronNode = layoutNode.append_child(neuronName.c_str());
 
-      int neuronInputNum = 0;
+      uint32_t neuronInputNum = 0;
       if (l == 0)
         neuronInputNum = neuralNetwork.getInputsNum();
       else
@@ -71,7 +71,7 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
       double bias = neuralNetwork.getBias(l, n);
       bnode.append_child(pugi::node_pcdata).set_value(TO_STR(bias));
 
-      for (int w = 0; w < neuronInputNum; w++) {
+      for (uint32_t w = 0; w < neuronInputNum; w++) {
         std::string wname = "Weight";
         wname += std::to_string(w);
         pugi::xml_node wnode = neuronNode.append_child(wname.c_str());
@@ -83,7 +83,7 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
   }
 
   pugi::xml_node outLayout = weightLstNode.append_child("OutputLayout");
-  for (int n = 0; n < neuralNetwork.getOutputNum(); n++) {
+  for (uint32_t n = 0; n < neuralNetwork.getOutputNum(); n++) {
     std::string neuronName = "Neuron";
     neuronName += std::to_string(n);
     pugi::xml_node neuronNode = outLayout.append_child(neuronName.c_str());
@@ -93,12 +93,12 @@ template <class NETWORK> void network2XML(NETWORK& neuralNetwork, const char* fi
     double bias = neuralNetwork.getBias(neuralNetwork.getHiddenLayersNum(), n);
     bnode.append_child(pugi::node_pcdata).set_value(TO_STR(bias));
 
-    for (int w = 0; w < neuralNetwork.getLayerNeuronsNum(neuralNetwork.getHiddenLayersNum() - 1); w++) {
+    for (uint32_t w = 0; w < neuralNetwork.getLayerNeuronsNum(neuralNetwork.getHiddenLayersNum() - 1); w++) {
       std::string wname = "Weight";
       wname += std::to_string(w);
       pugi::xml_node wnode = neuronNode.append_child(wname.c_str());
       wnode.append_attribute("type") = "double";
-      int lastLayout = neuralNetwork.getHiddenLayersNum();
+      uint32_t lastLayout = neuralNetwork.getHiddenLayersNum();
       double weight = neuralNetwork.getWeight(lastLayout, n, w);
       wnode.append_child(pugi::node_pcdata).set_value(TO_STR(weight));
     }
@@ -122,7 +122,7 @@ template <class NETWORK> void XML2Network(NETWORK& neuralNetwork, const char* fi
 
   pugi::xml_node weightNetwork = doc.child("WeightList");
 
-  int layoutNum = 0, neuronNum = 0, weightNum = 0;
+  uint32_t layoutNum = 0, neuronNum = 0, weightNum = 0;
 
   for (pugi::xml_node layout : doc.child("WeightList"))
   {

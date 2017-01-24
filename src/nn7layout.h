@@ -26,7 +26,7 @@ template <class NEURON_TYPE> class NN7Layout
 {
 public:
 
-  NN7Layout(int neuronsNum, int neuronInputNum)
+  NN7Layout(uint32_t neuronsNum, uint32_t neuronInputNum)
   {
     localGradients_ = new std::vector<double>(neuronsNum);
     nextLayout_ = NULL;
@@ -34,7 +34,7 @@ public:
     neuronInputNum_ = neuronInputNum;
     neuronsNum_ = neuronsNum;
 
-    for (int i = 0; i < neuronsNum_; i++) {
+    for (uint32_t i = 0; i < neuronsNum_; i++) {
       NEURON_TYPE* n = new NEURON_TYPE(neuronInputNum_);
       neuronLst_.push_back(n);
     }
@@ -42,7 +42,7 @@ public:
 
   ~NN7Layout()
   {
-    for (int i = 0; i < neuronLst_.size(); i++)
+    for (uint32_t i = 0; i < neuronLst_.size(); i++)
       delete neuronLst_[i];
 
     delete localGradients_;
@@ -59,7 +59,7 @@ public:
 
   void setRandomizer(NN7Randomizer* randomGen)
   {
-    for (int i = 0; i < neuronLst_.size(); i++)
+    for (uint32_t i = 0; i < neuronLst_.size(); i++)
     {
       neuronLst_[i]->setRandomizer(randomGen);
     }
@@ -69,7 +69,7 @@ public:
   {
     try
     {
-      for (int i = 0; i < neuronLst_.size(); i++)
+      for (uint32_t i = 0; i < neuronLst_.size(); i++)
         neuronLst_[i]->response(data);
     }
     catch (NN7Exception& e)
@@ -81,13 +81,13 @@ public:
   NN7DataVector& getLayoutResponse()
   {
     NN7DataVector ret;
-    for (int i = 0; i < neuronLst_.size(); i++)
+    for (uint32_t i = 0; i < neuronLst_.size(); i++)
       ret.append(neuronLst_[i]->getLastResponse());
 
     return ret;
   }
 
-  NEURON_TYPE* operator[](int neuronIndex) const
+  NEURON_TYPE* operator[](uint32_t neuronIndex) const
   {
     if (neuronIndex > (neuronLst_.size() -1))
       THROW_EXCEPTION("NN7Layout", "getNeuron", "layout::size() < index");
@@ -95,7 +95,7 @@ public:
     return neuronLst_[neuronIndex];
   }
 
-  NEURON_TYPE* getNeuron(int neuronIndex) const
+  NEURON_TYPE* getNeuron(uint32_t neuronIndex) const
   {
     if (neuronIndex > (neuronLst_.size() -1))
       THROW_EXCEPTION("NN7Layout", "getNeuron", "layout::size() < index");
@@ -106,7 +106,7 @@ public:
   NN7DataVector getLastResponse() const
   {
     NN7DataVector ret;
-    for (int i = 0; i < neuronLst_.size(); i++)
+    for (uint32_t i = 0; i < neuronLst_.size(); i++)
       ret.append(neuronLst_[i]->getLastResponse());
 
     return ret;
@@ -114,10 +114,10 @@ public:
 
   NN7Layout<NEURON_TYPE>* getNextLayer() const { return nextLayout_; }
   NN7Layout<NEURON_TYPE>* getPrevLayer() const { return prevLayout_; }
-  double getGradient(int neuronIndex) const { return localGradients_->operator[](neuronIndex); }
-  void setGradient(double g, int neuronIndex) { localGradients_->operator[](neuronIndex) = g; }
-  int getNeuronsNum() const { return neuronsNum_; }
-  int getInputsNum() const { return neuronInputNum_; }
+  double getGradient(uint32_t neuronIndex) const { return localGradients_->operator[](neuronIndex); }
+  void setGradient(double g, uint32_t neuronIndex) { localGradients_->operator[](neuronIndex) = g; }
+  uint32_t getNeuronsNum() const { return neuronsNum_; }
+  uint32_t getInputsNum() const { return neuronInputNum_; }
 
   void setNextLayer(NN7Layout<NEURON_TYPE>* nextLayer) { nextLayout_ = nextLayer; }
   void setPrevLayer(NN7Layout<NEURON_TYPE>* prevLayer) { prevLayout_ = prevLayer; }
@@ -126,8 +126,8 @@ private:
   std::vector<NEURON_TYPE*> neuronLst_;
   std::vector<double>* localGradients_;
 
-  int neuronInputNum_;
-  int neuronsNum_;
+  uint32_t neuronInputNum_;
+  uint32_t neuronsNum_;
 
   NN7Layout<NEURON_TYPE>* nextLayout_;
   NN7Layout<NEURON_TYPE>* prevLayout_;

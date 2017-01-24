@@ -16,7 +16,7 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 
 #include "nn7sigmoidneuron.h"
 
-NN7SigmoidNeuron::NN7SigmoidNeuron(int inputsNum,
+NN7SigmoidNeuron::NN7SigmoidNeuron(uint32_t inputsNum,
   NN7Randomizer* randomGenerator = NULL, double alpha)
   : NN7LinearNeuron(inputsNum, randomGenerator)
 {
@@ -27,7 +27,7 @@ NN7SigmoidNeuron::~NN7SigmoidNeuron()
 {
 }
 
-NN7UnipolarSigmoidNeuron::NN7UnipolarSigmoidNeuron(int inputsNum,
+NN7UnipolarSigmoidNeuron::NN7UnipolarSigmoidNeuron(uint32_t inputsNum,
   NN7Randomizer* randomGenerator, double alpha)
   : NN7SigmoidNeuron(inputsNum, randomGenerator, alpha)
 {
@@ -59,7 +59,7 @@ double NN7UnipolarSigmoidNeuron::sigmoid_function_unipolar(double v)
 }
 
 NN7BipolarSigmoidNeuron::NN7BipolarSigmoidNeuron(
-  int inputsNum, NN7Randomizer* randomGenerator,
+  uint32_t inputsNum, NN7Randomizer* randomGenerator,
   double alpha) : NN7SigmoidNeuron(inputsNum, randomGenerator, alpha)
 {
 }

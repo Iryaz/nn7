@@ -25,7 +25,7 @@ class NN7SigmoidNeuron : public NN7LinearNeuron
 {
 public:
 
-  NN7SigmoidNeuron(int inputsNum, NN7Randomizer* randomGenerator, double alpha = 1.0f);
+  NN7SigmoidNeuron(uint32_t inputsNum, NN7Randomizer* randomGenerator, double alpha = 1.0f);
   ~NN7SigmoidNeuron();
 
   virtual double response(NN7DataVector* x) = 0;
@@ -40,7 +40,7 @@ protected:
 class NN7UnipolarSigmoidNeuron : public NN7SigmoidNeuron
 {
 public:
-  NN7UnipolarSigmoidNeuron(int _inputsNum,
+  NN7UnipolarSigmoidNeuron(uint32_t _inputsNum,
     NN7Randomizer* _randomGenerator = NULL, double _alpha = 1.0f);
 
   double response(NN7DataVector* x);
@@ -53,7 +53,7 @@ private:
 class NN7BipolarSigmoidNeuron : public NN7SigmoidNeuron
 {
 public:
-  NN7BipolarSigmoidNeuron(int _inputsNum,
+  NN7BipolarSigmoidNeuron(uint32_t _inputsNum,
     NN7Randomizer* _randomGenerator = NULL, double _alpha = 1.0f);
 
   double response(NN7DataVector* x);

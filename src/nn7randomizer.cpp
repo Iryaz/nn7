@@ -27,7 +27,7 @@ NN7Randomizer::NN7Randomizer(double minRange, double maxRange) :
 {
 /*#ifndef _WIN32
 	FILE *fp = fopen("/dev/urandom", "r");
-	unsigned int foo;
+	unsigned uint32_t foo;
 	struct timeval t;
 
 	if(!fp)

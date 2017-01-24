@@ -33,26 +33,26 @@ public:
   };
 
   NN7DataVector();
-  NN7DataVector(int size, double initVectorValue = 0);
-  NN7DataVector(double* valueArray, int len);
+  NN7DataVector(uint32_t size, double initVectorValue = 0);
+  NN7DataVector(double* valueArray, uint32_t len);
   NN7DataVector(std::initializer_list<double> data);
   NN7DataVector(const NN7DataVector& v);
   ~NN7DataVector();
 
   void append(double _val);
-  void replaceValue(int index, double newValue);
+  void replaceValue(uint32_t index, double newValue);
   void normalize(NORMALIZE_METHOD method = EUCLIDEAN);
   void clear();
 
-  double getValue(int index) const;
-  double operator[](int index) const;
+  double getValue(uint32_t index) const;
+  double operator[](uint32_t index) const;
   NN7DataVector operator-(NN7DataVector& v);
   NN7DataVector operator+(NN7DataVector& v);
   NN7DataVector& operator=(const NN7DataVector& v);
 
-  int size() const { return elementCount_; }
+  uint32_t size() const { return elementCount_; }
 
-  static int vector2Array(NN7DataVector& v, double* arrayPtr, int arrayLen);
+  static uint32_t vector2Array(NN7DataVector& v, double* arrayPtr, uint32_t arrayLen);
 
 private:
 
@@ -65,7 +65,7 @@ private:
   };
 
   DataVectorElement *firstElement_;
-  int elementCount_;
+  uint32_t elementCount_;
 
 };
 

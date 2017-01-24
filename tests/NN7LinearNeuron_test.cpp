@@ -18,7 +18,7 @@ TEST_CASE("Welcome Base neuron test case") {
   }
 
   SECTION("Test response") {
-    for (int i = 0; i < bn.getInputsNum(); i++) {
+    for (uint32_t i = 0; i < bn.getInputsNum(); i++) {
       bn.setWeight(1 / 5.0f, i);
     }
 
@@ -29,7 +29,7 @@ TEST_CASE("Welcome Base neuron test case") {
 
   SECTION("Test exception Input weight") {
     try {
-      for (int i = 0; i < bn.getInputsNum() + 2; i++) {
+      for (uint32_t i = 0; i < bn.getInputsNum() + 2; i++) {
         bn.setWeight(1 / 5.0f, i);
       }
     }

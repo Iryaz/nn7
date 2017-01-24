@@ -28,10 +28,10 @@ with this program; if not, see <http://www.gnu.org/licenses>.
 class NN7LinearNeuron
 {
 public:
-  NN7LinearNeuron(int inputsNum, NN7Randomizer* randomizer = NULL);
+  NN7LinearNeuron(uint32_t inputsNum, NN7Randomizer* randomizer = NULL);
   ~NN7LinearNeuron();
 
-  void setWeight(double newWeight, int weightIndex);
+  void setWeight(double newWeight, uint32_t weightIndex);
   void setWeight(NN7DataVector* newWeightLst);
   void setError(double error) { error_ = error; }
   void setRandomizer(NN7Randomizer* randomizer);
@@ -45,13 +45,13 @@ public:
   virtual double response(NN7DataVector* x);
   double getLastResponse() const { return lastResponse_; }
   double getLastV() const { return lastV_; }
-  double getWeight(int weightIndex) const;
-  double operator[](int weightLst) const;
+  double getWeight(uint32_t weightIndex) const;
+  double operator[](uint32_t weightLst) const;
   double getError() { return error_; }
-  double getPrevDeltaWeight(int inputIndex) const { return prevDeltaWeight_[inputIndex]; }
-  void setPrevDeltaWeight(double weight, int inputIndex) { prevDeltaWeight_[inputIndex] = weight; }
+  double getPrevDeltaWeight(uint32_t inputIndex) const { return prevDeltaWeight_[inputIndex]; }
+  void setPrevDeltaWeight(double weight, uint32_t inputIndex) { prevDeltaWeight_[inputIndex] = weight; }
 
-  int getInputsNum() const  { return inputsNum_; }
+  uint32_t getInputsNum() const  { return inputsNum_; }
 
   static void print_weight(NN7LinearNeuron& n);
 
@@ -67,7 +67,7 @@ protected:
   double* prevDeltaWeight_;
   double bias_;
   double prevBias_;
-  int inputsNum_;
+  uint32_t inputsNum_;
 
   NN7Randomizer* randomGenerator_;
   NN7DataVector* lastInputDataPtr_;
