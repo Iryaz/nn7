@@ -369,7 +369,9 @@ protected:
 		{
 			double oldW = lastLayerNeuron->getWeight(w);
 			double deltaW = p->getNeuron(w)->getLastResponse() * l->getGradient(n) * trainMoment_;
+			deltaW += momentumConstant_ * lastLayerNeuron->getPrevDeltaWeight(w);
 			lastLayerNeuron->setWeight(oldW + deltaW, w);
+			lastLayerNeuron->setPrevDeltaWeight(deltaW, w);
 		}
 
         errorCost_ += pow(errorVector[n], 2);
@@ -398,7 +400,9 @@ protected:
 			{
 				double oldW = currentNeuron->getWeight(w);
 				double deltaW = l->getGradient(i) * trainMoment_ * oneTrain.inputVector[w];
+				deltaW += currentNeuron->getPrevDeltaWeight(w) * momentumConstant_;
 				currentNeuron->setWeight(oldW + deltaW, w);
+				currentNeuron->setPrevDeltaWeight(deltaW, w);
 			}  
 		  } 
 		  else
@@ -408,7 +412,9 @@ protected:
 			{
 				double oldW = currentNeuron->getWeight(w);
 				double deltaW = l->getGradient(i) * trainMoment_ * p->getNeuron(w)->getLastResponse();
+				deltaW += currentNeuron->getPrevDeltaWeight(w) * momentumConstant_;
 				currentNeuron->setWeight(oldW + deltaW, w);
+				currentNeuron->setPrevDeltaWeight(deltaW, w);
 			}   
 		  }
         }

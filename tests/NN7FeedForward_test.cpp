@@ -14,12 +14,14 @@ using std::cout;
 
 #define MAX_EPOCH 200000
 #define DESIRE_ERROR 0.00001
-#define TRAIN_MOMENT 0.8
+#define TRAIN_MOMENT 0.4
 #define MOMENTUM_CONST 0.0
 #define INPUTS_NUM 2
 #define OUTPUT_NUM 1
 #define HIDDEN_LAYOUT_NUM 1
 #define NEURONS_NUM 3
+
+typedef NN7FeedForward<NN7UnipolarSigmoidNeuron> FeedForwardNetwork;
 
 void print_vector(NN7DataVector &n)
 {
@@ -32,7 +34,7 @@ void print_vector(NN7DataVector &n)
 TEST_CASE("Base Neural network test") {
 
   SECTION("Train network XOR function") {
-    NN7FeedForward<NN7UnipolarSigmoidNeuron> nn7(INPUTS_NUM, OUTPUT_NUM, HIDDEN_LAYOUT_NUM, NEURONS_NUM);
+	FeedForwardNetwork nn7(INPUTS_NUM, OUTPUT_NUM, HIDDEN_LAYOUT_NUM, NEURONS_NUM);
 
     nn7.setTrainMoment(TRAIN_MOMENT);
     nn7.setMomentumConst(MOMENTUM_CONST);
@@ -59,7 +61,7 @@ TEST_CASE("Base Neural network test") {
     NN7DataVector x4 { 0, 1 };
     NN7DataVector testOut;
 
-    NN7FeedForward<NN7UnipolarSigmoidNeuron> newNetwork(NETWORK_SETTING_FILE);
+	FeedForwardNetwork newNetwork(NETWORK_SETTING_FILE);
 
     testOut = newNetwork.response(x1);
     cout << "(1, 1) -> " << testOut[0] << "\n";

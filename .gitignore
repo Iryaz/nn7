@@ -4,3 +4,11 @@ cmake_install.cmake
 Makefile
 log.txt
 build/*
+*.vcxproj
+*.vcxproj.filters
+.dir/
+Win32/
+*.opendb
+*.sdf
+*.sln
+*.dir
