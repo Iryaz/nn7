@@ -344,11 +344,20 @@ public:
   }
 
   template <class N> friend void print_nn(NN7FeedForward<N>& nn);
-  template <class N> friend void print_reverse_nn(NN7FeedForward<N>& nn);
 
 protected:
   NN7Layout<NEURON_TYPE>* firstLayout_;
   NN7Layout<NEURON_TYPE>* lastLayout_;
+
+  void updateWeightBackProp(NN7Layout<NEURON_TYPE>* layer, int neuron, int weight, double x)
+  {
+	  NEURON_TYPE* currentNeuron = layer->getNeuron(neuron);
+	  double oldW = currentNeuron->getWeight(weight);
+	  double deltaW = x * layer->getGradient(neuron) * trainMoment_;
+	  deltaW += momentumConstant_ * currentNeuron->getPrevDeltaWeight(weight);
+	  currentNeuron->setWeight(oldW + deltaW, weight);
+	  currentNeuron->setPrevDeltaWeight(deltaW, weight);
+  }
 
   void trainOneEpoch(TrainData& oneTrain)
   {
@@ -366,13 +375,7 @@ protected:
 
 		NN7Layout<NEURON_TYPE> *p = l->getPrevLayer();
 		for (int w = 0; w < lastLayerNeuron->getInputsNum(); w++)
-		{
-			double oldW = lastLayerNeuron->getWeight(w);
-			double deltaW = p->getNeuron(w)->getLastResponse() * l->getGradient(n) * trainMoment_;
-			deltaW += momentumConstant_ * lastLayerNeuron->getPrevDeltaWeight(w);
-			lastLayerNeuron->setWeight(oldW + deltaW, w);
-			lastLayerNeuron->setPrevDeltaWeight(deltaW, w);
-		}
+			updateWeightBackProp(l, n, w, p->getNeuron(w)->getLastResponse());
 
         errorCost_ += pow(errorVector[n], 2);
       }
@@ -397,25 +400,13 @@ protected:
 		  
 		  if (l->getPrevLayer() == NULL) {
 			for (int w = 0; w < currentNeuron->getInputsNum(); w++)
-			{
-				double oldW = currentNeuron->getWeight(w);
-				double deltaW = l->getGradient(i) * trainMoment_ * oneTrain.inputVector[w];
-				deltaW += currentNeuron->getPrevDeltaWeight(w) * momentumConstant_;
-				currentNeuron->setWeight(oldW + deltaW, w);
-				currentNeuron->setPrevDeltaWeight(deltaW, w);
-			}  
+				updateWeightBackProp(l, i, w, oneTrain.inputVector[w]);
 		  } 
 		  else
 		  {
 			NN7Layout<NEURON_TYPE>* p = l->getPrevLayer();  
 			for (int w = 0; w < currentNeuron->getInputsNum(); w++)
-			{
-				double oldW = currentNeuron->getWeight(w);
-				double deltaW = l->getGradient(i) * trainMoment_ * p->getNeuron(w)->getLastResponse();
-				deltaW += currentNeuron->getPrevDeltaWeight(w) * momentumConstant_;
-				currentNeuron->setWeight(oldW + deltaW, w);
-				currentNeuron->setPrevDeltaWeight(deltaW, w);
-			}   
+				updateWeightBackProp(l, i, w, p->getNeuron(w)->getLastResponse());
 		  }
         }
 
